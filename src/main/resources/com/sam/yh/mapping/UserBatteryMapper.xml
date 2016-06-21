@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sam.yh.dao.UserBatteryMapper" >
+  <resultMap id="BaseResultMap" type="com.sam.yh.model.UserBattery" >
+    <id column="user_id" property="userId" jdbcType="INTEGER" />
+    <id column="battery_id" property="batteryId" jdbcType="INTEGER" />
+    <result column="pub_sn" property="btyPubSn" jdbcType="VARCHAR" />
+    <result column="imei" property="bytImei" jdbcType="VARCHAR" />
+    <result column="buy_date" property="buyDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="PubBtyResultMap" type="com.sam.yh.model.PubBattery" >
+    <result column="pub_sn" property="btyPubSn" jdbcType="VARCHAR" />
+    <result column="imei" property="bytImei" jdbcType="VARCHAR" />
+    <result column="sim_no" property="btySimNo" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- 查询当天卖出去的电池 -->
+  <resultMap id="BtySaleResultMap" type="com.sam.yh.model.UserBatteryInfo" >
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="battery_id" property="batteryId" jdbcType="INTEGER" />
+    <result column="buy_date" property="buyDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    user_id, battery_id, buy_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.sam.yh.model.UserBatteryKey" >
+    select
+    u.user_id as user_id,
+    u.battery_id as battery_id,
+    b.pub_sn as pub_sn,
+    b.imei as imei,
+    u.buy_date as buy_date
+    from user_battery u
+    inner join
+    battery b
+    on u.battery_id = b.id
+    where u.user_id = #{userId,jdbcType=INTEGER}
+      and u.battery_id = #{batteryId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    u.user_id as user_id,
+    u.battery_id as battery_id,
+    b.pub_sn as pub_sn,
+    b.imei as imei,
+    u.buy_date as buy_date
+    from user_battery u
+    inner join
+    battery b
+    on u.battery_id = b.id
+    where u.user_id = #{userId}
+  </select>
+  
+<!-- 查询当天卖出去的电池 -->
+<select id="selectByBuyDate" resultMap="BtySaleResultMap" parameterType="java.util.Map">
+select 
+    <include refid="Base_Column_List" />
+    from user_battery
+    where  buy_date &gt;= #{startDate,jdbcType=TIMESTAMP}  and buy_date &lt; #{endDate,jdbcType=TIMESTAMP}
+    order by buy_date
+</select>
+  
+  <select id="selectBtysByUserId" resultMap="PubBtyResultMap" parameterType="java.lang.Integer" >
+    select 
+    b.pub_sn as pub_sn,
+    b.imei as imei,
+    b.sim_no as sim_no
+    from user_battery u
+    inner join
+    battery b
+    on u.battery_id = b.id
+    where u.user_id = #{userId}
+  </select>
+  <select id="selectByBtyId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_battery
+    where battery_id = #{batteryId}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.sam.yh.model.UserBatteryKey" >
+    delete from user_battery
+    where user_id = #{userId,jdbcType=INTEGER}
+      and battery_id = #{batteryId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sam.yh.model.UserBattery" >
+    insert into user_battery (user_id, battery_id, buy_date
+      )
+    values (#{userId,jdbcType=INTEGER}, #{batteryId,jdbcType=INTEGER}, #{buyDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.sam.yh.model.UserBattery" >
+    insert into user_battery
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="batteryId != null" >
+        battery_id,
+      </if>
+      <if test="buyDate != null" >
+        buy_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="batteryId != null" >
+        #{batteryId,jdbcType=INTEGER},
+      </if>
+      <if test="buyDate != null" >
+        #{buyDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sam.yh.model.UserBattery" >
+    update user_battery
+    <set >
+      <if test="buyDate != null" >
+        buy_date = #{buyDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+      and battery_id = #{batteryId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sam.yh.model.UserBattery" >
+    update user_battery
+    set buy_date = #{buyDate,jdbcType=TIMESTAMP}
+    where user_id = #{userId,jdbcType=INTEGER}
+      and battery_id = #{batteryId,jdbcType=INTEGER}
+  </update>
+</mapper>

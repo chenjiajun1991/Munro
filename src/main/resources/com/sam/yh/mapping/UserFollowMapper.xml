@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sam.yh.dao.UserFollowMapper" >
+  <resultMap id="BaseResultMap" type="com.sam.yh.model.UserFollow" >
+    <id column="user_id" property="userId" jdbcType="INTEGER" />
+    <id column="battery_id" property="batteryId" jdbcType="INTEGER" />
+    <result column="pub_sn" property="btyPubSn" jdbcType="VARCHAR" />
+    <result column="imei" property="bytImei" jdbcType="VARCHAR" />
+    <result column="follow_status" property="followStatus" jdbcType="BIT" />
+    <result column="follower_name" property="followerNickName" jdbcType="VARCHAR" />
+    <result column="follow_date" property="followDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="PubBtyResultMap" type="com.sam.yh.model.PubBattery" >
+    <result column="pub_sn" property="btyPubSn" jdbcType="VARCHAR" />
+    <result column="imei" property="bytImei" jdbcType="VARCHAR" />
+    <result column="sim_no" property="btySimNo" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    user_id, battery_id, follow_status, follow_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.sam.yh.model.UserFollowKey" >
+    select 
+    u.user_id as user_id,
+    u.battery_id as battery_id,
+    b.pub_sn as pub_sn,
+    b.imei as imei,
+    u.follow_status as follow_status,
+    u.follow_date as follow_date
+    from user_follow u
+    inner join battery b
+    on u.battery_id = b.id
+    where u.user_id = #{userId,jdbcType=INTEGER}
+      and u.battery_id = #{batteryId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    u.user_id as user_id,
+    u.battery_id as battery_id,
+    b.pub_sn as pub_sn,
+    b.imei as imei,
+    u.follow_status as follow_status,
+    u.follow_date as follow_date
+    from user_follow u
+    inner join battery b
+    on u.battery_id = b.id
+    where u.follow_status = true and u.user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <select id="selectBtysByUserId" resultMap="PubBtyResultMap" parameterType="java.lang.Integer" >
+    select 
+    b.pub_sn as pub_sn,
+    b.imei as imei,
+    b.sim_no as sim_no
+    from user_follow u
+    inner join
+    battery b
+    on u.battery_id = b.id
+    where u.follow_status = true and u.user_id = #{userId}
+  </select>
+  <select id="selectBtyFollowers" resultType="com.sam.yh.resp.bean.BtyFollower" parameterType="java.lang.Integer" >
+    select 
+    f.follower_name as followerName,
+    u.mobile_phone as followerPhone
+    from user_follow f
+    inner join
+    user u
+    on f.user_id = u.user_id
+    where f.follow_status = true and f.battery_id = #{batteryId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.sam.yh.model.UserFollowKey" >
+    delete from user_follow
+    where user_id = #{userId,jdbcType=INTEGER}
+      and battery_id = #{batteryId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sam.yh.model.UserFollow" >
+    insert into user_follow (user_id, battery_id, follower_name, follow_status, 
+      follow_date)
+    values (#{userId,jdbcType=INTEGER}, #{batteryId,jdbcType=INTEGER}, #{followerNickName,jdbcType=VARCHAR}, 
+      #{followStatus,jdbcType=BIT}, #{followDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.sam.yh.model.UserFollow" >
+    insert into user_follow
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="batteryId != null" >
+        battery_id,
+      </if>
+      <if test="followerNickName != null" >
+        follower_name,
+      </if>
+      <if test="followStatus != null" >
+        follow_status,
+      </if>
+      <if test="followDate != null" >
+        follow_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="batteryId != null" >
+        #{batteryId,jdbcType=INTEGER},
+      </if>
+      <if test="followStatus != null" >
+        #{followStatus,jdbcType=BIT},
+      </if>
+      <if test="followerNickName != null" >
+        #{followerNickName,jdbcType=VARCHAR},
+      </if>
+      <if test="followDate != null" >
+        #{followDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sam.yh.model.UserFollow" >
+    update user_follow
+    <set >
+      <if test="followStatus != null" >
+        follow_status = #{followStatus,jdbcType=BIT},
+      </if>
+      <if test="followerNickName != null" >
+        follower_name = #{followerNickName,jdbcType=VARCHAR},
+      </if>
+      <if test="followDate != null" >
+        follow_date = #{followDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+      and battery_id = #{batteryId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sam.yh.model.UserFollow" >
+    update user_follow
+    set follow_status = #{followStatus,jdbcType=BIT},
+      follower_name = #{followerNickName,jdbcType=VARCHAR},
+      follow_date = #{followDate,jdbcType=TIMESTAMP}
+    where user_id = #{userId,jdbcType=INTEGER}
+      and battery_id = #{batteryId,jdbcType=INTEGER}
+  </update>
+</mapper>

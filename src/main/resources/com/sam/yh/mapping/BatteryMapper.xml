@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sam.yh.dao.BatteryMapper" >
+  <resultMap id="BaseResultMap" type="com.sam.yh.model.Battery" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="sn" property="sn" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="CHAR" />
+    <result column="bty_type" property="btyType" jdbcType="BIT" />
+    <result column="pub_sn" property="pubSn" jdbcType="VARCHAR" />
+    <result column="imei" property="imei" jdbcType="VARCHAR" />
+    <result column="sim_no" property="simNo" jdbcType="VARCHAR" />
+    <result column="imsi" property="imsi" jdbcType="VARCHAR" />
+    <result column="gsim_no" property="gsmSimNo" jdbcType="VARCHAR" />
+    <result column="iccid" property="iccid" jdbcType="VARCHAR" />
+    <result column="reseller_id" property="resellerId" jdbcType="INTEGER" />
+    <result column="sale_status" property="saleStatus" jdbcType="BIT" />
+    <result column="city_id" property="cityId" jdbcType="INTEGER" />
+    <result column="lock_longitude" property="lockLongitude" jdbcType="VARCHAR" />
+    <result column="lock_latitude" property="lockLatitude" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="sale_date" property="saleDate" jdbcType="TIMESTAMP" />
+    <result column="lock_date" property="lockDate" jdbcType="TIMESTAMP" />
+    <result column="expiry_date" property="expiryDate" jdbcType="TIMESTAMP" />
+    <result column="bty_quantity" property="btyQuantity" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, sn, status, bty_type, pub_sn, imei, sim_no, imsi, gsim_no, iccid, reseller_id, sale_status, city_id, 
+    lock_longitude, lock_latitude, create_date, sale_date, lock_date, expiry_date, bty_quantity
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from battery
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByIMEI" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from battery
+    where imei = #{imei,jdbcType=VARCHAR}
+  </select>
+  <select id="selectBySimNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from battery
+    where sim_no = #{simNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectBySn" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from battery
+    where sn = #{btySn,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByPubSn" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from battery
+    where pub_sn = #{pubSn,jdbcType=VARCHAR}
+  </select>
+  <select id="countByReseller" resultType="int" parameterType="java.lang.Integer" >
+    select 
+    count(1)
+    from battery
+    where reseller_id = #{resellerId,jdbcType=INTEGER}
+  </select>
+  <select id="countByCity" resultType="int" parameterType="java.lang.Integer" >
+    select 
+    count(1)
+    from battery
+    where city_id = #{cityId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from battery
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sam.yh.model.Battery" useGeneratedKeys="true" keyProperty="id">
+    insert into battery (sn, status, 
+      bty_type, pub_sn, imei, sim_no, imsi, gsim_no, iccid, 
+      reseller_id, sale_status, city_id, 
+      lock_longitude, lock_latitude, 
+      create_date, sale_date, lock_date, 
+      expiry_date, bty_quantity)
+    values (#{sn,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, 
+      #{btyType,jdbcType=BIT}, #{pubSn,jdbcType=VARCHAR}, #{imei,jdbcType=VARCHAR}, #{simNo,jdbcType=VARCHAR}, #{imsi,jdbcType=VARCHAR}, #{gsmSimNo,jdbcType=VARCHAR},
+      #{iccid,jdbcType=VARCHAR}, #{resellerId,jdbcType=INTEGER}, #{saleStatus,jdbcType=BIT}, #{cityId,jdbcType=INTEGER}, 
+      #{lockLongitude,jdbcType=VARCHAR}, #{lockLatitude,jdbcType=VARCHAR},
+      #{createDate,jdbcType=TIMESTAMP}, #{saleDate,jdbcType=TIMESTAMP}, #{lockDate,jdbcType=TIMESTAMP}, 
+      #{expiryDate,jdbcType=TIMESTAMP}, #{btyQuantity,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.sam.yh.model.Battery" useGeneratedKeys="true" keyProperty="id">
+    insert into battery
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="sn != null" >
+        sn,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="btyType != null" >
+        bty_type,
+      </if>
+      <if test="pubSn != null" >
+        pub_sn,
+      </if>
+      <if test="imei != null" >
+        imei,
+      </if>
+      <if test="simNo != null" >
+        sim_no,
+      </if>
+      <if test="imsi != null" >
+        imsi,
+      </if>
+      <if test="gsmSimNo != null" >
+        gsim_no,
+      </if>
+      <if test="iccid != null" >
+        iccid,
+      </if>
+      <if test="resellerId != null" >
+        reseller_id,
+      </if>
+      <if test="saleStatus != null" >
+        sale_status,
+      </if>
+      <if test="cityId != null" >
+        city_id,
+      </if>
+      <if test="lockLongitude != null" >
+        lock_longitude,
+      </if>
+      <if test="lockLatitude != null" >
+        lock_latitude,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="saleDate != null" >
+        sale_date,
+      </if>
+      <if test="lockDate != null" >
+        lock_date,
+      </if>
+      <if test="expiryDate != null" >
+        expiry_date,
+      </if>
+      <if test="btyQuantity != null" >
+        bty_quantity,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="sn != null" >
+        #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=CHAR},
+      </if>
+      <if test="btyType != null" >
+        #{btyType,jdbcType=BIT},
+      </if>
+      <if test="pubSn != null" >
+        #{pubSn,jdbcType=VARCHAR},
+      </if>
+      <if test="imei != null" >
+        #{imei,jdbcType=VARCHAR},
+      </if>
+      <if test="simNo != null" >
+        #{simNo,jdbcType=VARCHAR},
+      </if>
+      <if test="imsi != null" >
+        #{imsi,jdbcType=VARCHAR},
+      </if>
+      <if test="gsmSimNo != null" >
+        #{gsmSimNo,jdbcType=VARCHAR},
+      </if>
+      <if test="iccid != null" >
+        #{iccid,jdbcType=VARCHAR},
+      </if>
+      <if test="resellerId != null" >
+        #{resellerId,jdbcType=INTEGER},
+      </if>
+      <if test="saleStatus != null" >
+        #{saleStatus,jdbcType=BIT},
+      </if>
+      <if test="cityId != null" >
+        #{cityId,jdbcType=INTEGER},
+      </if>
+      <if test="lockLongitude != null" >
+        #{lockLongitude,jdbcType=VARCHAR},
+      </if>
+      <if test="lockLatitude != null" >
+        #{lockLatitude,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="saleDate != null" >
+        #{saleDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lockDate != null" >
+        #{lockDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expiryDate != null" >
+        #{expiryDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="btyQuantity != null" >
+        #{btyQuantity,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sam.yh.model.Battery" >
+    update battery
+    <set >
+      <if test="sn != null" >
+        sn = #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=CHAR},
+      </if>
+      <if test="btyType != null" >
+        bty_type = #{btyType,jdbcType=BIT},
+      </if>
+      <if test="pubSn != null" >
+        pub_sn = #{pubSn,jdbcType=VARCHAR},
+      </if>
+      <if test="imei != null" >
+        imei = #{imei,jdbcType=VARCHAR},
+      </if>
+      <if test="simNo != null" >
+        sim_no = #{simNo,jdbcType=VARCHAR},
+      </if>
+      <if test="imsi != null" >
+        imsi = #{imsi,jdbcType=VARCHAR},
+      </if>
+      <if test="gsmSimNo != null" >
+        gsim_no = #{gsmSimNo,jdbcType=VARCHAR},
+      </if>
+      <if test="iccid != null" >
+        iccid = #{iccid,jdbcType=VARCHAR},
+      </if>
+      <if test="resellerId != null" >
+        reseller_id = #{resellerId,jdbcType=INTEGER},
+      </if>
+      <if test="saleStatus != null" >
+        sale_status = #{saleStatus,jdbcType=BIT},
+      </if>
+      <if test="cityId != null" >
+        city_id = #{cityId,jdbcType=INTEGER},
+      </if>
+      <if test="lockLongitude != null" >
+        lock_longitude =  #{lockLongitude,jdbcType=VARCHAR},
+      </if>
+      <if test="lockLatitude != null" >
+        lock_latitude = #{lockLatitude,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="saleDate != null" >
+        sale_date = #{saleDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lockDate != null" >
+        lock_date = #{lockDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expiryDate != null" >
+        expiry_date = #{expiryDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="btyQuantity != null" >
+        bty_quantity = #{btyQuantity,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sam.yh.model.Battery" >
+    update battery
+    set sn = #{sn,jdbcType=VARCHAR},
+      status = #{status,jdbcType=CHAR},
+      bty_type = #{btyType,jdbcType=BIT},
+      pub_sn = #{pubSn,jdbcType=VARCHAR},
+      imei = #{imei,jdbcType=VARCHAR},
+      sim_no = #{simNo,jdbcType=VARCHAR},
+      imsi = #{imsi,jdbcType=VARCHAR},
+      gsim_no = #{gsmSimNo,jdbcType=VARCHAR},
+      iccid = #{iccid,jdbcType=VARCHAR},
+      reseller_id = #{resellerId,jdbcType=INTEGER},
+      sale_status = #{saleStatus,jdbcType=BIT},
+      city_id = #{cityId,jdbcType=INTEGER},
+      lock_longitude =  #{lockLongitude,jdbcType=VARCHAR},
+      lock_latitude = #{lockLatitude,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      sale_date = #{saleDate,jdbcType=TIMESTAMP},
+      lock_date = #{lockDate,jdbcType=TIMESTAMP},
+      expiry_date = #{expiryDate,jdbcType=TIMESTAMP},
+      bty_quantity = #{btyQuantity,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
